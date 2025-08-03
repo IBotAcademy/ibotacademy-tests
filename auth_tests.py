@@ -1,5 +1,4 @@
 import unittest
-import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -14,8 +13,12 @@ class AuthTestSuite(unittest.TestCase):
         self.wait = WebDriverWait(self.driver, timeout=2)
         self.addCleanup(self.driver.quit)
 
+    def get_and_maximize_window(self, url):
+        self.driver.get(url)
+        self.driver.maximize_window()
+
     def login_as_admin(self):
-        self.driver.get("http://localhost:5173/login")
+        self.get_and_maximize_window("http://localhost:5173/login")
         self.wait = WebDriverWait(self.driver, timeout=5)
         self.wait.until(EC.visibility_of_element_located((By.ID, "input-email")))
         self.driver.find_element(By.ID, "input-email").send_keys("admin@mail.com")
@@ -24,7 +27,7 @@ class AuthTestSuite(unittest.TestCase):
         self.wait.until(lambda _: "login" not in self.driver.current_url)
 
     def test_01_valid_login(self):
-        self.driver.get("http://localhost:5173/login")
+        self.get_and_maximize_window("http://localhost:5173/login")
 
         self.driver.find_element(By.ID, "input-email").send_keys("admin@mail.com")
         self.driver.find_element(By.ID, "input-password").send_keys("Abcde-1234")
@@ -40,7 +43,7 @@ class AuthTestSuite(unittest.TestCase):
         )
 
     def test_02_invalid_login(self):
-        self.driver.get("http://localhost:5173/login")
+        self.get_and_maximize_window("http://localhost:5173/login")
 
         self.driver.find_element(By.ID, "input-email").send_keys("admin@mail.com")
         self.driver.find_element(By.ID, "input-password").send_keys("Abcde-1235")
@@ -56,7 +59,7 @@ class AuthTestSuite(unittest.TestCase):
         )
 
     def test_03_register(self):
-        self.driver.get("http://localhost:5173/register")
+        self.get_and_maximize_window("http://localhost:5173/register")
 
         self.driver.find_element(By.ID, "input-email").send_keys("admin@mail.com")
         self.driver.find_element(By.ID, "input-firstname").send_keys("Student")
@@ -90,7 +93,7 @@ class AuthTestSuite(unittest.TestCase):
 
     def test_04_enablement(self):
         self.login_as_admin()
-        self.driver.get("http://localhost:5173/controlpanel/users")
+        self.get_and_maximize_window("http://localhost:5173/controlpanel/users")
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
 
@@ -184,7 +187,7 @@ class AuthTestSuite(unittest.TestCase):
 
     def test_05_modify_user_data(self):
         self.login_as_admin()
-        self.driver.get("http://localhost:5173/controlpanel/users")
+        self.get_and_maximize_window("http://localhost:5173/controlpanel/users")
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
         table_body.find_element(
@@ -244,7 +247,7 @@ class AuthTestSuite(unittest.TestCase):
 
     def test_06_admin_create_user(self):
         self.login_as_admin()
-        self.driver.get("http://localhost:5173/controlpanel/users")
+        self.get_and_maximize_window("http://localhost:5173/controlpanel/users")
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         self.driver.find_element(By.ID, "button-add-item").click()
 
@@ -294,7 +297,7 @@ class AuthTestSuite(unittest.TestCase):
 
     def test_07_delete_user(self):
         self.login_as_admin()
-        self.driver.get("http://localhost:5173/controlpanel/users")
+        self.get_and_maximize_window("http://localhost:5173/controlpanel/users")
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
         # Trying to delete itself
@@ -365,7 +368,7 @@ class AuthTestSuite(unittest.TestCase):
 
     def test_08_change_profile_data(self):
         self.login_as_admin()
-        self.driver.get("http://localhost:5173/profile")
+        self.get_and_maximize_window("http://localhost:5173/profile")
         self.wait.until(EC.visibility_of_element_located((By.ID, "form-user")))
         input_firstname = self.driver.find_element(By.ID, "input-firstname")
         input_firstname.clear()
@@ -432,7 +435,7 @@ class AuthTestSuite(unittest.TestCase):
         )
 
     def login_as_teacher(self):
-        self.driver.get("http://localhost:5173/login")
+        self.get_and_maximize_window("http://localhost:5173/login")
         self.wait = WebDriverWait(self.driver, timeout=5)
         self.wait.until(EC.visibility_of_element_located((By.ID, "input-email")))
         self.driver.find_element(By.ID, "input-email").send_keys("teacher@mail.com")
@@ -442,7 +445,7 @@ class AuthTestSuite(unittest.TestCase):
 
     def test_09_permissions_change(self):
         self.login_as_teacher()
-        self.driver.get("http://localhost:5173/")
+        self.get_and_maximize_window("http://localhost:5173/")
         self.wait.until(EC.visibility_of_element_located((By.ID, "layout-base")))
 
         self.assertTrue(len(self.driver.find_elements(By.ID, "navlink-users")) == 0)
@@ -452,7 +455,7 @@ class AuthTestSuite(unittest.TestCase):
         self.assertTrue(len(self.driver.find_elements(By.ID, "navlink-roles")) == 0)
 
         self.login_as_admin()
-        self.driver.get("http://localhost:5173/")
+        self.get_and_maximize_window("http://localhost:5173/")
         self.wait.until(EC.visibility_of_element_located((By.ID, "layout-base")))
 
         navlinks_permission = self.driver.find_elements(By.ID, "navlink-permissions")
@@ -514,7 +517,7 @@ class AuthTestSuite(unittest.TestCase):
 
     def test_10_modify_roles(self):
         self.login_as_teacher()
-        self.driver.get("http://localhost:5173/controlpanel/roles")
+        self.get_and_maximize_window("http://localhost:5173/controlpanel/roles")
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
         table_body.find_element(
@@ -618,7 +621,7 @@ class AuthTestSuite(unittest.TestCase):
 
     def test_11_create_delete_roles(self):
         self.login_as_admin()
-        self.driver.get("http://localhost:5173/controlpanel/roles")
+        self.get_and_maximize_window("http://localhost:5173/controlpanel/roles")
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
 
         self.driver.find_element(By.ID, "button-add-item").click()
@@ -663,6 +666,12 @@ class AuthTestSuite(unittest.TestCase):
 
         Select(self.driver.find_element(By.ID, "select-role")).select_by_visible_text(
             "Prueba"
+        )
+
+        self.wait.until(
+            EC.invisibility_of_element_located(
+                (By.XPATH, "//div[contains(@id, 'toast-role-mutation-success')]")
+            )
         )
 
         self.driver.find_element(By.ID, "button-submit").click()
@@ -710,6 +719,15 @@ class AuthTestSuite(unittest.TestCase):
 
         Select(self.driver.find_element(By.ID, "select-role")).select_by_visible_text(
             "Profesor"
+        )
+
+        self.wait.until(
+            lambda driver: all(
+                not element.is_displayed()
+                for element in driver.find_elements(
+                    By.XPATH, "//div[contains(@id, 'toast-')]"
+                )
+            )
         )
 
         self.driver.find_element(By.ID, "button-submit").click()
