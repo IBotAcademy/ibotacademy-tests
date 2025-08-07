@@ -756,6 +756,31 @@ class ResourcesTestSuite(unittest.TestCase):
             )
         )
 
+        table_body.find_element(
+            By.XPATH,
+            f"//tr[contains(., 'Edited Test Course 1')]//td//button[starts-with(@id, 'delete-course-button-')]",
+        ).click()
+
+        self.wait.until(
+            EC.visibility_of_element_located(
+                (
+                    By.XPATH,
+                    "//*[contains(@id, 'button-delete-course-confirm')]",
+                )
+            )
+        )
+
+        self.driver.find_element(By.ID, "button-delete-course-confirm").click()
+
+        self.wait.until(
+            EC.invisibility_of_element_located(
+                (
+                    By.XPATH,
+                    "//tr[contains(., 'Edited Test Course 1')]",
+                )
+            )
+        )
+
 
 if __name__ == "__main__":
 
