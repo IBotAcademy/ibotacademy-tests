@@ -735,7 +735,7 @@ class CompetenciesTestSuite(unittest.TestCase):
         self.wait.until(EC.visibility_of_element_located((By.ID, "sections-container")))
 
         self.driver.find_element(
-            By.XPATH, "//*[contains(., 'Test Evaluative Activity 1')]"
+            By.XPATH, "//p[contains(., 'Test Evaluative Activity 1')]"
         ).click()
 
         self.wait.until(
@@ -755,7 +755,7 @@ class CompetenciesTestSuite(unittest.TestCase):
         )
 
         input_description.clear()
-        input_description.send_keys("Change Test Evaluative Activity 1 Description")
+        input_description.send_keys("Change Test Evaluative Activity 1")
 
         Select(
             self.driver.find_element(
@@ -853,12 +853,12 @@ class CompetenciesTestSuite(unittest.TestCase):
 
         self.wait.until(
             EC.visibility_of_element_located(
-                (By.XPATH, "//*[contains(., 'Test Evaluative Activity 1')]")
+                (By.XPATH, "//p[contains(., 'Change Test Evaluative Activity 1')]")
             )
         )
 
         self.driver.find_element(
-            By.XPATH, "//*[contains(., 'Test Evaluative Activity 1')]"
+            By.XPATH, "//p[contains(., 'Change Test Evaluative Activity 1')]"
         ).click()
 
         self.wait.until(
@@ -918,7 +918,7 @@ class CompetenciesTestSuite(unittest.TestCase):
         self.wait.until(EC.visibility_of_element_located((By.ID, "sections-container")))
 
         self.driver.find_element(
-            By.XPATH, "//*[contains(., 'Test Evaluative Activity 1')]"
+            By.XPATH, "//p[contains(., 'Test Evaluative Activity 1')]"
         ).click()
 
         self.wait.until(
@@ -1016,12 +1016,12 @@ class CompetenciesTestSuite(unittest.TestCase):
         self.wait.until(EC.visibility_of_element_located((By.ID, "select-competency")))
 
         self.driver.find_element(
-            By.XPATH, "*[contains(., 'Change competency Test 1')]"
+            By.XPATH, "//p[contains(., 'Change competency Test 1')]"
         ).click()
 
         self.wait.until(
             EC.visibility_of_element_located(
-                (By.XPATH, "*[contains(., 'Change Test Learning Output 1')]")
+                (By.XPATH, "//*[contains(., 'Change Test Learning Output 1')]")
             )
         )
 
