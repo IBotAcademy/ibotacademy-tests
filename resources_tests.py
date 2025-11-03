@@ -9,6 +9,9 @@ import time
 
 
 class ResourcesTestSuite(unittest.TestCase):
+
+    frontend_host = "http://localhost"
+
     def setUp(self):
         self.driver = webdriver.Chrome()
         self.wait = WebDriverWait(self.driver, timeout=2)
@@ -19,7 +22,7 @@ class ResourcesTestSuite(unittest.TestCase):
         self.driver.maximize_window()
 
     def login_as_admin(self):
-        self.get_and_maximize_window("http://localhost:5173/login")
+        self.get_and_maximize_window(f"{self.frontend_host}/login")
         self.wait = WebDriverWait(self.driver, timeout=5)
         self.wait.until(EC.visibility_of_element_located((By.ID, "input-email")))
         self.driver.find_element(By.ID, "input-email").send_keys("admin@mail.com")
@@ -29,7 +32,7 @@ class ResourcesTestSuite(unittest.TestCase):
 
     def test_01_create_course(self):
         self.login_as_admin()
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/courses")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "button-add-item")))
 
@@ -68,7 +71,7 @@ class ResourcesTestSuite(unittest.TestCase):
     def test_02_create_category(self):
         self.login_as_admin()
         self.get_and_maximize_window(
-            "http://localhost:5173/controlpanel/coursecategories"
+            f"{self.frontend_host}/controlpanel/coursecategories"
         )
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "button-add-item")))
@@ -108,7 +111,7 @@ class ResourcesTestSuite(unittest.TestCase):
     def test_03_edit_category(self):
         self.login_as_admin()
         self.get_and_maximize_window(
-            "http://localhost:5173/controlpanel/coursecategories"
+            f"{self.frontend_host}/controlpanel/coursecategories"
         )
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
@@ -149,7 +152,7 @@ class ResourcesTestSuite(unittest.TestCase):
 
     def test_04_edit_course(self):
         self.login_as_admin()
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/courses")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
@@ -188,7 +191,7 @@ class ResourcesTestSuite(unittest.TestCase):
             ).text,
         )
 
-        self.get_and_maximize_window("http://localhost:5173/explore/courses")
+        self.get_and_maximize_window(f"{self.frontend_host}/explore/courses")
 
         self.wait.until(
             EC.visibility_of_element_located(
@@ -196,7 +199,7 @@ class ResourcesTestSuite(unittest.TestCase):
             )
         )
 
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/courses")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
@@ -220,7 +223,7 @@ class ResourcesTestSuite(unittest.TestCase):
             )
         )
 
-        self.get_and_maximize_window("http://localhost:5173/explore/courses")
+        self.get_and_maximize_window(f"{self.frontend_host}/explore/courses")
 
         self.wait.until(
             EC.invisibility_of_element_located(
@@ -228,7 +231,7 @@ class ResourcesTestSuite(unittest.TestCase):
             )
         )
 
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/courses")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
 
         self.wait.until(
             EC.visibility_of_element_located(
@@ -256,7 +259,7 @@ class ResourcesTestSuite(unittest.TestCase):
     def test_05_try_deleting_used_course_category(self):
         self.login_as_admin()
         self.get_and_maximize_window(
-            "http://localhost:5173/controlpanel/coursecategories"
+            f"{self.frontend_host}/controlpanel/coursecategories"
         )
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
@@ -289,7 +292,7 @@ class ResourcesTestSuite(unittest.TestCase):
 
     def test_06_edit_course_content(self):
         self.login_as_admin()
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/courses")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
@@ -453,7 +456,7 @@ class ResourcesTestSuite(unittest.TestCase):
     def test_07_create_formation_line(self):
         self.login_as_admin()
         self.get_and_maximize_window(
-            "http://localhost:5173/controlpanel/formationlines"
+            f"{self.frontend_host}/controlpanel/formationlines"
         )
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "button-add-item")))
@@ -520,7 +523,7 @@ class ResourcesTestSuite(unittest.TestCase):
     def test_08_edit_formation_line(self):
         self.login_as_admin()
         self.get_and_maximize_window(
-            "http://localhost:5173/controlpanel/formationlines"
+            f"{self.frontend_host}/controlpanel/formationlines"
         )
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
@@ -566,7 +569,7 @@ class ResourcesTestSuite(unittest.TestCase):
             ).text,
         )
 
-        self.get_and_maximize_window("http://localhost:5173/explore/formation-lines")
+        self.get_and_maximize_window(f"{self.frontend_host}/explore/formation-lines")
 
         self.wait.until(
             EC.visibility_of_element_located(
@@ -575,7 +578,7 @@ class ResourcesTestSuite(unittest.TestCase):
         )
 
         self.get_and_maximize_window(
-            "http://localhost:5173/controlpanel/formationlines"
+            f"{self.frontend_host}/controlpanel/formationlines"
         )
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
@@ -602,7 +605,7 @@ class ResourcesTestSuite(unittest.TestCase):
             )
         )
 
-        self.get_and_maximize_window("http://localhost:5173/explore/formation-lines")
+        self.get_and_maximize_window(f"{self.frontend_host}/explore/formation-lines")
 
         self.wait.until(
             EC.invisibility_of_element_located(
@@ -611,7 +614,7 @@ class ResourcesTestSuite(unittest.TestCase):
         )
 
         self.get_and_maximize_window(
-            "http://localhost:5173/controlpanel/formationlines"
+            f"{self.frontend_host}/controlpanel/formationlines"
         )
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
@@ -632,7 +635,7 @@ class ResourcesTestSuite(unittest.TestCase):
 
     def test_09_try_deleting_used_course(self):
         self.login_as_admin()
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/courses")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
@@ -672,7 +675,7 @@ class ResourcesTestSuite(unittest.TestCase):
     def test_10_delete_formation_line(self):
         self.login_as_admin()
         self.get_and_maximize_window(
-            "http://localhost:5173/controlpanel/formationlines"
+            f"{self.frontend_host}/controlpanel/formationlines"
         )
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
@@ -704,7 +707,7 @@ class ResourcesTestSuite(unittest.TestCase):
 
     def test_11_delete_course(self):
         self.login_as_admin()
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/courses")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "button-add-item")))
 

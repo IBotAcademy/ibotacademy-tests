@@ -7,17 +7,28 @@ import requests
 
 
 class CompetenciesTestSuite(unittest.TestCase):
+
+    frontend_host = "http://localhost"
+
     def setUp(self):
         self.driver = webdriver.Chrome()
         self.wait = WebDriverWait(self.driver, timeout=2)
         self.addCleanup(self.driver.quit)
+
+    def close_toasts(self):
+        toasts = self.driver.find_elements(By.CLASS_NAME, "chakra-alert")
+        for toast in toasts:
+            close_button = toast.find_element(
+                By.XPATH, './/button[@aria-label="Close"]'
+            )
+            close_button.click()
 
     def get_and_maximize_window(self, url):
         self.driver.get(url)
         self.driver.maximize_window()
 
     def login_as_admin(self):
-        self.get_and_maximize_window("http://localhost:5173/login")
+        self.get_and_maximize_window(f"{self.frontend_host}/login")
         self.wait = WebDriverWait(self.driver, timeout=5)
         self.wait.until(EC.visibility_of_element_located((By.ID, "input-email")))
         self.driver.find_element(By.ID, "input-email").send_keys("admin@mail.com")
@@ -27,7 +38,7 @@ class CompetenciesTestSuite(unittest.TestCase):
 
     def test_01_create_competency(self):
         self.login_as_admin()
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/competencies")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/competencies")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "button-add-item")))
 
@@ -60,7 +71,7 @@ class CompetenciesTestSuite(unittest.TestCase):
 
     def test_02_edit_competency(self):
         self.login_as_admin()
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/competencies")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/competencies")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
@@ -97,7 +108,7 @@ class CompetenciesTestSuite(unittest.TestCase):
 
     def test_03_add_competency_to_course(self):
         self.login_as_admin()
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/courses")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "button-add-item")))
 
@@ -155,7 +166,7 @@ class CompetenciesTestSuite(unittest.TestCase):
 
     def test_04_add_learning_output_to_competency(self):
         self.login_as_admin()
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/courses")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
         table_body.find_element(
@@ -226,7 +237,7 @@ class CompetenciesTestSuite(unittest.TestCase):
 
     def test_05_add_performance_indicator_to_learning_output(self):
         self.login_as_admin()
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/courses")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
         table_body.find_element(
@@ -310,7 +321,7 @@ class CompetenciesTestSuite(unittest.TestCase):
 
     def test_06_edit_competencies_tree(self):
         self.login_as_admin()
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/courses")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
         table_body.find_element(
@@ -513,6 +524,8 @@ class CompetenciesTestSuite(unittest.TestCase):
             )
         ).select_by_visible_text("4")
 
+        self.close_toasts()
+
         self.wait.until(
             EC.element_to_be_clickable(
                 (
@@ -547,7 +560,7 @@ class CompetenciesTestSuite(unittest.TestCase):
 
     def test_07_edit_competency_level_from_management_view(self):
         self.login_as_admin()
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/competencies")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/competencies")
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
         table_body.find_element(
@@ -606,7 +619,7 @@ class CompetenciesTestSuite(unittest.TestCase):
 
     def test_08_associate_performance_indicator_to_activity(self):
         self.login_as_admin()
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/courses")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
 
@@ -723,7 +736,7 @@ class CompetenciesTestSuite(unittest.TestCase):
 
     def test_09_edit_evaluative_activity(self):
         self.login_as_admin()
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/courses")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
 
         table_body = self.driver.find_element(By.ID, "table-body")
@@ -788,7 +801,7 @@ class CompetenciesTestSuite(unittest.TestCase):
 
     def test_10_upload_grade(self):
         self.login_as_admin()
-        self.get_and_maximize_window("http://localhost:5173/explore/courses")
+        self.get_and_maximize_window(f"{self.frontend_host}/explore/courses")
 
         self.wait.until(
             EC.visibility_of_element_located(
@@ -883,7 +896,7 @@ class CompetenciesTestSuite(unittest.TestCase):
 
         try:
             response = requests.put(
-                "http://localhost/competencies/control-panel/activity-attempt/update/",
+                f"{self.frontend_host}/competencies/control-panel/activity-attempt/update/",
                 json={
                     "token": {"PIN": token},
                     "evaluaciones": [
@@ -906,7 +919,7 @@ class CompetenciesTestSuite(unittest.TestCase):
 
         self.assertFalse(request_error)
 
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/courses")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
 
         table_body = self.driver.find_element(By.ID, "table-body")
@@ -931,7 +944,7 @@ class CompetenciesTestSuite(unittest.TestCase):
 
     def test_11_try_deleting_used_competency(self):
         self.login_as_admin()
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/competencies")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/competencies")
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
 
@@ -966,7 +979,7 @@ class CompetenciesTestSuite(unittest.TestCase):
     def test_12_deleting_evaluative_activity(self):
 
         self.login_as_admin()
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/courses")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
 
         table_body = self.driver.find_element(By.ID, "table-body")
@@ -1004,7 +1017,7 @@ class CompetenciesTestSuite(unittest.TestCase):
     def test_13_deleting_performance_indicator(self):
 
         self.login_as_admin()
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/courses")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
 
         table_body = self.driver.find_element(By.ID, "table-body")
@@ -1125,7 +1138,7 @@ class CompetenciesTestSuite(unittest.TestCase):
     def test_14_creating_competency_directly_into_course(self):
 
         self.login_as_admin()
-        self.get_and_maximize_window("http://localhost:5173/controlpanel/courses")
+        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
 
         table_body = self.driver.find_element(By.ID, "table-body")
