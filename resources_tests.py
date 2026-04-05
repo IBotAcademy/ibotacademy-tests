@@ -17,12 +17,20 @@ class ResourcesTestSuite(unittest.TestCase):
         self.wait = WebDriverWait(self.driver, timeout=2)
         self.addCleanup(self.driver.quit)
 
-    def get_and_maximize_window(self, url):
+    def close_toasts(self):
+        toasts = self.driver.find_elements(By.CLASS_NAME, "chakra-alert")
+        for toast in toasts:
+            close_button = toast.find_element(
+                By.XPATH, './/button[@aria-label="Close"]'
+            )
+            close_button.click()
+
+    def get_and_resize_window(self, url):
         self.driver.get(url)
-        self.driver.maximize_window()
+        self.driver.set_window_size(1024, 768)
 
     def login_as_admin(self):
-        self.get_and_maximize_window(f"{self.frontend_host}/login")
+        self.get_and_resize_window(f"{self.frontend_host}/login")
         self.wait = WebDriverWait(self.driver, timeout=5)
         self.wait.until(EC.visibility_of_element_located((By.ID, "input-email")))
         self.driver.find_element(By.ID, "input-email").send_keys("admin@mail.com")
@@ -32,7 +40,7 @@ class ResourcesTestSuite(unittest.TestCase):
 
     def test_01_create_course(self):
         self.login_as_admin()
-        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
+        self.get_and_resize_window(f"{self.frontend_host}/controlpanel/courses")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "button-add-item")))
 
@@ -68,9 +76,11 @@ class ResourcesTestSuite(unittest.TestCase):
             ).text,
         )
 
+        self.close_toasts()
+
     def test_02_create_category(self):
         self.login_as_admin()
-        self.get_and_maximize_window(
+        self.get_and_resize_window(
             f"{self.frontend_host}/controlpanel/coursecategories"
         )
 
@@ -108,9 +118,11 @@ class ResourcesTestSuite(unittest.TestCase):
             ).text,
         )
 
+        self.close_toasts()
+
     def test_03_edit_category(self):
         self.login_as_admin()
-        self.get_and_maximize_window(
+        self.get_and_resize_window(
             f"{self.frontend_host}/controlpanel/coursecategories"
         )
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
@@ -150,9 +162,11 @@ class ResourcesTestSuite(unittest.TestCase):
             ).text,
         )
 
+        self.close_toasts()
+
     def test_04_edit_course(self):
         self.login_as_admin()
-        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
+        self.get_and_resize_window(f"{self.frontend_host}/controlpanel/courses")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
@@ -191,7 +205,9 @@ class ResourcesTestSuite(unittest.TestCase):
             ).text,
         )
 
-        self.get_and_maximize_window(f"{self.frontend_host}/explore/courses")
+        self.close_toasts()
+
+        self.get_and_resize_window(f"{self.frontend_host}/explore/courses")
 
         self.wait.until(
             EC.visibility_of_element_located(
@@ -199,7 +215,7 @@ class ResourcesTestSuite(unittest.TestCase):
             )
         )
 
-        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
+        self.get_and_resize_window(f"{self.frontend_host}/controlpanel/courses")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
@@ -223,7 +239,7 @@ class ResourcesTestSuite(unittest.TestCase):
             )
         )
 
-        self.get_and_maximize_window(f"{self.frontend_host}/explore/courses")
+        self.get_and_resize_window(f"{self.frontend_host}/explore/courses")
 
         self.wait.until(
             EC.invisibility_of_element_located(
@@ -231,7 +247,7 @@ class ResourcesTestSuite(unittest.TestCase):
             )
         )
 
-        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
+        self.get_and_resize_window(f"{self.frontend_host}/controlpanel/courses")
 
         self.wait.until(
             EC.visibility_of_element_located(
@@ -258,7 +274,7 @@ class ResourcesTestSuite(unittest.TestCase):
 
     def test_05_try_deleting_used_course_category(self):
         self.login_as_admin()
-        self.get_and_maximize_window(
+        self.get_and_resize_window(
             f"{self.frontend_host}/controlpanel/coursecategories"
         )
 
@@ -290,9 +306,11 @@ class ResourcesTestSuite(unittest.TestCase):
             ).text,
         )
 
+        self.close_toasts()
+
     def test_06_edit_course_content(self):
         self.login_as_admin()
-        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
+        self.get_and_resize_window(f"{self.frontend_host}/controlpanel/courses")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
@@ -371,6 +389,8 @@ class ResourcesTestSuite(unittest.TestCase):
                 "//div[contains(@id, 'toast-lesson-mutation-success-')]",
             ).text,
         )
+
+        self.close_toasts()
 
         self.wait.until(
             EC.visibility_of_element_located(
@@ -455,9 +475,7 @@ class ResourcesTestSuite(unittest.TestCase):
 
     def test_07_create_formation_line(self):
         self.login_as_admin()
-        self.get_and_maximize_window(
-            f"{self.frontend_host}/controlpanel/formationlines"
-        )
+        self.get_and_resize_window(f"{self.frontend_host}/controlpanel/formationlines")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "button-add-item")))
 
@@ -520,11 +538,11 @@ class ResourcesTestSuite(unittest.TestCase):
             ).text,
         )
 
+        self.close_toasts()
+
     def test_08_edit_formation_line(self):
         self.login_as_admin()
-        self.get_and_maximize_window(
-            f"{self.frontend_host}/controlpanel/formationlines"
-        )
+        self.get_and_resize_window(f"{self.frontend_host}/controlpanel/formationlines")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
@@ -569,7 +587,9 @@ class ResourcesTestSuite(unittest.TestCase):
             ).text,
         )
 
-        self.get_and_maximize_window(f"{self.frontend_host}/explore/formation-lines")
+        self.close_toasts()
+
+        self.get_and_resize_window(f"{self.frontend_host}/explore/formation-lines")
 
         self.wait.until(
             EC.visibility_of_element_located(
@@ -577,9 +597,7 @@ class ResourcesTestSuite(unittest.TestCase):
             )
         )
 
-        self.get_and_maximize_window(
-            f"{self.frontend_host}/controlpanel/formationlines"
-        )
+        self.get_and_resize_window(f"{self.frontend_host}/controlpanel/formationlines")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
@@ -605,7 +623,7 @@ class ResourcesTestSuite(unittest.TestCase):
             )
         )
 
-        self.get_and_maximize_window(f"{self.frontend_host}/explore/formation-lines")
+        self.get_and_resize_window(f"{self.frontend_host}/explore/formation-lines")
 
         self.wait.until(
             EC.invisibility_of_element_located(
@@ -613,9 +631,7 @@ class ResourcesTestSuite(unittest.TestCase):
             )
         )
 
-        self.get_and_maximize_window(
-            f"{self.frontend_host}/controlpanel/formationlines"
-        )
+        self.get_and_resize_window(f"{self.frontend_host}/controlpanel/formationlines")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
@@ -635,7 +651,7 @@ class ResourcesTestSuite(unittest.TestCase):
 
     def test_09_try_deleting_used_course(self):
         self.login_as_admin()
-        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
+        self.get_and_resize_window(f"{self.frontend_host}/controlpanel/courses")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
@@ -672,11 +688,11 @@ class ResourcesTestSuite(unittest.TestCase):
             ).text,
         )
 
+        self.close_toasts()
+
     def test_10_delete_formation_line(self):
         self.login_as_admin()
-        self.get_and_maximize_window(
-            f"{self.frontend_host}/controlpanel/formationlines"
-        )
+        self.get_and_resize_window(f"{self.frontend_host}/controlpanel/formationlines")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "table-body")))
         table_body = self.driver.find_element(By.ID, "table-body")
@@ -707,7 +723,7 @@ class ResourcesTestSuite(unittest.TestCase):
 
     def test_11_delete_course(self):
         self.login_as_admin()
-        self.get_and_maximize_window(f"{self.frontend_host}/controlpanel/courses")
+        self.get_and_resize_window(f"{self.frontend_host}/controlpanel/courses")
 
         self.wait.until(EC.visibility_of_element_located((By.ID, "button-add-item")))
 
@@ -732,6 +748,8 @@ class ResourcesTestSuite(unittest.TestCase):
                 By.XPATH, "//div[contains(@id, 'toast-course-mutation-success-')]"
             ).text,
         )
+
+        self.close_toasts()
 
         table_body = self.driver.find_element(By.ID, "table-body")
         table_body.find_element(
@@ -787,4 +805,4 @@ class ResourcesTestSuite(unittest.TestCase):
 
 if __name__ == "__main__":
 
-    unittest.main(verbosity=2)
+    unittest.main(verbosity=2, failfast=True)
